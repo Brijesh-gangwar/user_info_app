@@ -13,11 +13,16 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   bool hasMore = true;
   String currentSearch = '';
 
+  bool isLoading = false; // Prevents duplicate loads
+
   UserBloc(this.api) : super(UserInitial()) {
     on<FetchUsers>(_onFetchUsers);
   }
 
   Future<void> _onFetchUsers(FetchUsers event, Emitter<UserState> emit) async {
+    if (isLoading) return;
+    isLoading = true;
+
     try {
       if (event.reset) {
         users.clear();
@@ -26,9 +31,15 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         currentSearch = event.searchQuery ?? '';
       }
 
-      if (!hasMore) return;
+      if (!hasMore) {
+        isLoading = false;
+        return;
+      }
 
-      emit(UserLoading());
+      // Emit loading only if initial or reset
+      if (users.isEmpty || event.reset) {
+        emit(UserLoading());
+      }
 
       final fetchedUsers = await api.fetchUsers(
         limit: limit,
@@ -40,9 +51,11 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       skip += limit;
       hasMore = fetchedUsers.length == limit;
 
-      emit(UserLoaded(users: users, hasMore: hasMore));
+      emit(UserLoaded(users: List.from(users), hasMore: hasMore));
     } catch (e) {
       emit(UserError(e.toString()));
+    } finally {
+      isLoading = false;
     }
   }
 }

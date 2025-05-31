@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'screens/user_list_screen.dart';
 
-// 1. ThemeCubit: manages theme state
+import 'blocs/user/user_event.dart';
+import 'services/api_service.dart';
+import 'ui/screens/user_list_screen.dart';
+import 'blocs/user/user_bloc.dart';
+
+// ThemeCubit: manages theme state
 class ThemeCubit extends Cubit<bool> {
   ThemeCubit() : super(false); // false = light mode by default
 
@@ -11,8 +15,11 @@ class ThemeCubit extends Cubit<bool> {
 
 void main() {
   runApp(
-    BlocProvider(
-      create: (_) => ThemeCubit(),
+    MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => ThemeCubit()),
+        BlocProvider(create: (_) => UserBloc(ApiService())..add(const FetchUsers())),
+      ],
       child: const MyApp(),
     ),
   );
@@ -39,7 +46,7 @@ class MyApp extends StatelessWidget {
           ),
           home: UserListScreen(
             isDarkMode: isDarkMode,
-            onThemeToggle: (value) {
+            onThemeToggle: (_) {
               context.read<ThemeCubit>().toggleTheme();
             },
           ),

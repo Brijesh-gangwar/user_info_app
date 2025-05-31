@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../blocs/user_details/user_details_bloc.dart';
-import '../blocs/user_details/user_details_event.dart';
-import '../blocs/user_details/user_details_state.dart';
+import '../../blocs/user_details/user_details_bloc.dart';
+import '../../blocs/user_details/user_details_event.dart';
+import '../../blocs/user_details/user_details_state.dart';
 
-import '../services/api_service.dart';
+import '../../services/api_service.dart';
 
 
 class UserDetailScreen extends StatefulWidget {
