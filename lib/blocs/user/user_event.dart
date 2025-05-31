@@ -7,7 +7,6 @@ abstract class UserEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-// Event to fetch users with optional search & pagination
 class FetchUsers extends UserEvent {
   final bool reset;
   final String? searchQuery;

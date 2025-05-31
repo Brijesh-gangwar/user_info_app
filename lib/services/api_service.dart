@@ -5,7 +5,7 @@ import '../models/User.dart';
 class ApiService {
   final String baseUrl = 'https://dummyjson.com';
 
-  /// Fetch paginated users with optional search
+
   Future<List<User>> fetchUsers({
     int limit = 10,
     int skip = 0,
@@ -22,7 +22,7 @@ class ApiService {
     return List<User>.from(data['users'].map((json) => User.fromJson(json)));
   }
 
-  /// Fetch full user details (if needed)
+
   Future<User> fetchUserDetail(int userId) async {
     final response = await http.get(Uri.parse('$baseUrl/users/$userId'));
     if (response.statusCode != 200) throw Exception('Failed to fetch user details');
@@ -30,7 +30,7 @@ class ApiService {
     return User.fromJson(data);
   }
 
-  /// Fetch user's post titles
+
   Future<List<String>> fetchPosts(int userId) async {
     final response = await http.get(Uri.parse('$baseUrl/posts/user/$userId'));
     if (response.statusCode != 200) throw Exception('Failed to fetch posts');
@@ -38,7 +38,6 @@ class ApiService {
     return List<String>.from(data['posts'].map((post) => post['title']));
   }
 
-  /// Fetch user's todos
   Future<List<String>> fetchTodos(int userId) async {
     final response = await http.get(Uri.parse('$baseUrl/todos/user/$userId'));
     if (response.statusCode != 200) throw Exception('Failed to fetch todos');

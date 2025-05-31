@@ -13,7 +13,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   bool hasMore = true;
   String currentSearch = '';
 
-  bool isLoading = false; // Prevents duplicate loads
+  bool isLoading = false; 
 
   UserBloc(this.api) : super(UserInitial()) {
     on<FetchUsers>(_onFetchUsers);
@@ -36,7 +36,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         return;
       }
 
-      // Emit loading only if initial or reset
+
       if (users.isEmpty || event.reset) {
         emit(UserLoading());
       }

@@ -25,7 +25,7 @@ class UserDetailBloc extends Bloc<UserDetailEvent, UserDetailState> {
   }
 
   Future<void> _onRefreshUserDetail(RefreshUserDetail event, Emitter<UserDetailState> emit) async {
-    // Same as fetch, but could differentiate if needed
+    
     await _onFetchUserDetail(FetchUserDetail(event.userId), emit);
   }
 }

@@ -4,9 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../blocs/user_details/user_details_bloc.dart';
 import '../../blocs/user_details/user_details_event.dart';
 import '../../blocs/user_details/user_details_state.dart';
-
 import '../../services/api_service.dart';
+import '../widgets/user_avatar_widget.dart';
 
+import '../widgets/user_section.dart';
 
 class UserDetailScreen extends StatefulWidget {
   final int userId;
@@ -23,8 +24,8 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
   @override
   void initState() {
     super.initState();
-    _userDetailBloc = UserDetailBloc(ApiService());
-    _userDetailBloc.add(FetchUserDetail(widget.userId));
+    _userDetailBloc = UserDetailBloc(ApiService())
+      ..add(FetchUserDetail(widget.userId));
   }
 
   @override
@@ -39,16 +40,17 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<UserDetailBloc>(
-      create: (_) => _userDetailBloc,
+    return BlocProvider.value(
+      value: _userDetailBloc,
       child: Scaffold(
         appBar: AppBar(
           title: BlocBuilder<UserDetailBloc, UserDetailState>(
             builder: (context, state) {
-              if (state is UserDetailLoaded) {
-                return Text(state.user.fullName);
-              }
-              return const Text('User Details');
+              return Text(
+                state is UserDetailLoaded
+                    ? state.user.fullName
+                    : 'User Details',
+              );
             },
           ),
         ),
@@ -59,71 +61,90 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
             } else if (state is UserDetailError) {
               return Center(child: Text('Error: ${state.message}'));
             } else if (state is UserDetailLoaded) {
-              final user = state.user;
-              final posts = state.posts;
-              final todos = state.todos;
-
               return RefreshIndicator(
                 onRefresh: _onRefresh,
                 child: ListView(
                   padding: const EdgeInsets.all(16),
                   physics: const AlwaysScrollableScrollPhysics(),
                   children: [
-                    // User Avatar
+                    UserAvatar(imageUrl: state.user.image),
+                    const SizedBox(height: 16),
                     Center(
-                      child: CircleAvatar(
-                        radius: 50,
-                        backgroundImage: (user.image != null && user.image!.isNotEmpty)
-                            ? NetworkImage(user.image!)
-                            : null,
-                        child: (user.image == null || user.image!.isEmpty)
-                            ? const Icon(Icons.person, size: 50)
-                            : null,
+                      child: Text(
+                        state.user.fullName,
+                        style: const TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
+                    const SizedBox(height: 10),
+                    const Divider(),
+                    userinfo(state.user),
+
                     const SizedBox(height: 16),
 
-                    // User Info
-                    Text('Name: ${user.fullName}', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 8),
-                    Text('Email: ${user.email}', style: const TextStyle(fontSize: 16)),
-                    const SizedBox(height: 4),
-                    Text('Phone: ${user.phone}', style: const TextStyle(fontSize: 16)),
-                    const SizedBox(height: 4),
-                    Text('Address: ${user.address}', style: const TextStyle(fontSize: 16)),
-                    const Divider(height: 32),
-
-                    // Posts Section
-                    const Text('Posts:', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                    posts.isEmpty
-                        ? const Padding(
-                            padding: EdgeInsets.symmetric(vertical: 8),
-                            child: Text('No posts available.', style: TextStyle(fontSize: 16, fontStyle: FontStyle.italic)),
-                          )
-                        : Column(
-                            children: posts.map((post) => ListTile(title: Text(post))).toList(),
-                          ),
                     const Divider(),
 
-                    // Todos Section
-                    const Text('Todos:', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                    todos.isEmpty
-                        ? const Padding(
-                            padding: EdgeInsets.symmetric(vertical: 8),
-                            child: Text('No todos available.', style: TextStyle(fontSize: 16, fontStyle: FontStyle.italic)),
-                          )
-                        : Column(
-                            children: todos.map((todo) => ListTile(title: Text(todo))).toList(),
-                          ),
+                    UserSection(title: 'Posts', items: state.posts),
+                    const SizedBox(height: 10),
+
+                    const Divider(),
+                    UserSection(title: 'Todos', items: state.todos),
                   ],
                 ),
               );
             }
-
             return const SizedBox.shrink();
           },
         ),
       ),
+    );
+  }
+
+  Widget userinfo(dynamic user) {
+    if (user.fullName.isEmpty) {
+      return const Text(
+        'No user information available.',
+        style: TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
+      );
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+         const SizedBox(height: 10),
+         Text('Information',
+            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+        const SizedBox(height: 10),
+
+        _infoRow('Email   ', user.email),
+        const SizedBox(height: 6),
+
+        _infoRow('Phone ', user.phone),
+        const SizedBox(height: 6),
+
+        _infoRow('Address', user.address),
+      ],
+    );
+  }
+
+  Widget _infoRow(String label, String value) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          '$label : ',
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+        ),
+        Expanded(
+          child: Text(
+            value,
+            style: const TextStyle(fontSize: 16),
+            softWrap: true,
+          ),
+        ),
+      ],
     );
   }
 }

@@ -6,9 +6,9 @@ import 'services/api_service.dart';
 import 'ui/screens/user_list_screen.dart';
 import 'blocs/user/user_bloc.dart';
 
-// ThemeCubit: manages theme state
+
 class ThemeCubit extends Cubit<bool> {
-  ThemeCubit() : super(false); // false = light mode by default
+  ThemeCubit() : super(false); 
 
   void toggleTheme() => emit(!state);
 }
