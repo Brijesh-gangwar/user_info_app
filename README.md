@@ -17,6 +17,19 @@ This Flutter application allows users to:
 
 ---
 
+## 📸 Screenshots
+
+### User List Screen
+![User List Screen](screenshots/user_list_screen.jpg)
+
+### User Details Screen
+![User Details Screen](screenshots/user_details_screen.jpg)
+
+### Search bar and theme feature
+![Search bar and theme feature](screenshots/searchbar_features.jpg)
+
+---
+
 ## 🧱 Architecture Explanation
 
 The app follows a **layered and modular architecture**:
