@@ -19,14 +19,12 @@ This Flutter application allows users to:
 
 ## 📸 Screenshots
 
-### User List Screen
-![User List Screen](screenshots/user_list_screen.jpg)
 
-### User Details Screen
-![User Details Screen](screenshots/user_details_screen.jpg)
-
-### Search bar and theme feature
-![Search bar and theme feature](screenshots/searchbar_features.jpg)
+<p align="center">
+  <img src="screenshots/user_list_screen.jpg" alt="User List Screen" width="250" style="margin-right: 10px;" />
+  <img src="screenshots/user_details_screen.jpg" alt="User Details Screen" width="250" style="margin-right: 10px;" />
+  <img src="screenshots/searchbar_features.jpg" alt="Search bar and theme feature" width="250" />
+</p>
 
 ---
 
